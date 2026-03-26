@@ -1,0 +1,500 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#f0ece5;font-family:'DM Sans',sans-serif;color:#1a1a1a;min-height:100vh}
+.screen{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:52px 64px;max-width:760px;margin:0 auto}
+.wide{max-width:920px}
+#pbar{position:fixed;top:0;left:0;height:3px;background:#1a1a1a;transition:width .5s;z-index:100}
+#plbl{position:fixed;top:18px;right:28px;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#bbb}
+h1{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;line-height:1.25;margin-bottom:20px}
+h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;margin-bottom:18px}
+p{font-size:14.5px;line-height:1.85;color:#333;margin-bottom:14px}
+p:last-of-type{margin-bottom:0}
+.tiny{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#bbb;margin-bottom:28px;display:block}
+.rule{width:40px;height:2px;background:#1a1a1a;margin:22px 0}
+.btn{background:#1a1a1a;color:#fff;border:none;padding:13px 32px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .2s;align-self:flex-end;margin-top:28px}
+.btn:hover{background:#3a3a3a}
+.btn:disabled{background:#d0ccc6;color:#a8a49f;cursor:default}
+.btn-ghost{background:transparent;color:#888;border:1px solid #ccc}
+.btn-ghost:hover{background:#eee}
+/* consent input */
+.consent-field{display:flex;align-items:center;gap:14px;margin-top:20px}
+.consent-field span{font-size:14px;color:#333}
+.consent-field input{border:none;border-bottom:1.5px solid #1a1a1a;padding:6px 6px;font-size:14px;font-family:'DM Sans',sans-serif;background:transparent;outline:none;width:72px}
+/* demo */
+.demo-sec{padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid #e5e0d8}
+.demo-sec:last-child{border-bottom:none;margin-bottom:0}
+.demo-q{font-size:14.5px;color:#1a1a1a;margin-bottom:14px;line-height:1.65;font-weight:500}
+.demo-q em{font-weight:400;color:#888;font-style:italic}
+.radio-row{display:flex;flex-wrap:wrap;gap:20px}
+.r-lbl{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;min-width:64px}
+.r-lbl input{accent-color:#1a1a1a;width:18px;height:18px}
+.r-lbl span{font-size:12px;text-align:center;color:#555;line-height:1.3}
+input[type=number]{border:none;border-bottom:1.5px solid #1a1a1a;padding:5px 4px;font-size:14px;background:transparent;outline:none;width:72px;font-family:'DM Sans',sans-serif}
+/* excl box */
+.excl-box{border-left:3px solid #bbb;padding:18px 22px;margin:16px 0;background:#fff}
+.excl-box p{font-size:14px;line-height:1.75;color:#444;margin:0}
+/* info box */
+.info-box{background:#fff;border:1px solid #e5e0d8;padding:18px 22px;margin:16px 0}
+.info-box p{font-size:13.5px;line-height:1.75;color:#444;margin:0}
+/* encoding */
+.enc-card{display:flex;flex-direction:column;align-items:center;width:100%}
+.enc-face{width:260px;height:260px;object-fit:cover;display:block}
+.enc-vig-box{margin-top:20px;max-width:420px;width:100%;border-left:2px solid #1a1a1a;padding-left:18px}
+.enc-vig-box p{font-size:14px;line-height:1.8;color:#333;font-style:italic;margin:0}
+.enc-ctr{font-size:10px;color:#bbb;letter-spacing:1px;align-self:flex-end;margin-bottom:12px}
+.timer-wrap{width:420px;max-width:100%;height:2px;background:#e0dbd2;margin:18px 0 0;overflow:hidden}
+.timer-fill{height:2px;background:#1a1a1a;width:0%;transition:width .1s linear}
+/* test */
+.test-face{width:260px;height:260px;object-fit:cover;display:block;margin:0 auto}
+.test-q{font-family:'Cormorant Garamond',serif;font-size:21px;text-align:center;color:#1a1a1a;margin:20px 0 22px;line-height:1.4}
+.ans-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:4px}
+.ans-btn{border:1.5px solid #1a1a1a;background:transparent;padding:14px 20px;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;min-width:120px}
+.ans-btn:hover{background:#1a1a1a;color:#fff}
+.ans-btn.sel{background:#1a1a1a;color:#fff}
+.ans-btn.wn{border-color:#bbb;color:#999}
+.ans-btn.wn:hover,.ans-btn.wn.sel{background:#888;border-color:#888;color:#fff}
+.step2-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#bbb;text-align:center;display:block;margin-bottom:12px}
+.ctr-lbl{font-size:10px;color:#bbb;letter-spacing:1px;align-self:flex-end;margin-bottom:14px}
+/* LZO */
+.lzo-item{padding:16px 0;border-bottom:1px solid #e5e0d8}
+.lzo-q{font-size:14px;color:#222;line-height:1.6;margin-bottom:12px}
+.lik-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px;padding-bottom:8px;border-bottom:1px solid #e5e0d8}
+.lik-hdr span{font-size:8px;color:#aaa;text-align:center;white-space:pre-line}
+.lik-row{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.lik-opt{display:flex;justify-content:center;cursor:pointer}
+.lik-opt input{width:17px;height:17px;accent-color:#1a1a1a;cursor:pointer}
+</style></head><body>
+<div id="pbar"></div><div id="plbl"></div>
+<div id="root"></div>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// STIMULI
+// ═══════════════════════════════════════════════════════════════════════════════
+const VIG_TRUST=[
+  "Ich schätze Menschen, die zu ihrem Wort stehen – das versuche ich auch selbst vorzuleben.",
+  "Für mich ist ein ehrliches ‚Nein' viel wertvoller als ein halbherziges ‚Ja'.",
+  "Ich suche jemanden, mit dem man sich nicht nur die guten Zeiten, sondern auch den Alltag teilt.",
+  "Ghosting finde ich respektlos; ich sage lieber klar ab, wenn es für mich nicht passt.",
+  "In einer Beziehung ist mir wichtig, dass man sich blind aufeinander verlassen kann.",
+  "Ich mag keine Spielchen – wenn ich jemanden mag, zeige ich das auch offen.",
+  "Zuverlässigkeit ist für mich kein Pflicht, sondern ein Zeichen von Wertschätzung.",
+  "Ich finde es schön, wenn man gemeinsam Pläne schmiedet und diese dann auch wirklich umsetzt.",
+  "Ein respektvoller Umgang auf Augenhöhe ist für mich die absolute Grundvoraussetzung.",
+  "Ich bin eher der Typ für Langstrecken als für kurze Sprints.",
+  "Wenn es mal hakt, rede ich lieber darüber, anstatt mich einfach zurückzuziehen.",
+  "Ich investiere gerne Zeit in einen Menschen, um ihn wirklich tiefgründig kennenzulernen.",
+  "Treue bedeutet für mich vor allem emotionaler Rückhalt.",
+  "Pünktlichkeit und Verlässlichkeit sind mir wichtig – sie zeigen Respekt vor der Zeit des anderen.",
+  "Ich brauche kein Drama; ich suche eine stabile Basis, auf der man gemeinsam wachsen kann.",
+  "Wenn ich sage, dass ich für jemanden da bin, dann meine ich das auch so.",
+  "Ich finde, dass Vertrauen das Fundament ist, auf dem alles andere aufgebaut wird.",
+  "Ehrlichkeit bedeutet für mich auch, die eigenen Fehler und Unsicherheiten offen zuzugeben.",
+  "Ich mag Beständigkeit und freue mich darauf, mit jemandem eine gemeinsame Routine zu entwickeln.",
+  "Ein Versprechen ist für mich eine Verpflichtung, die ich sehr ernst nehme.",
+];
+const VIG_UNTRUST=[
+  "Ich bin ein extrem spontaner Mensch und entscheide oft erst in der letzten Minute, worauf ich Lust habe.",
+  "Mir ist meine Freiheit sehr wichtig; ich brauche jemanden, der mir meinen Raum lässt und nicht klammert.",
+  "Ich lebe im Hier und Jetzt und schaue einfach mal, wohin die Reise geht, ohne direkt Pläne zu schmieden.",
+  "Gute Gespräche sind toll, aber ich antworte oft erst nach Tagen, weil ich mein Handy auch mal weglege.",
+  "Ich finde, man sollte sich in der Kennenlernphase alle Optionen offenhalten.",
+  "Erwartungen von anderen fühlen sich für mich schnell wie Druck an, dem ich gerne ausweiche.",
+  "Ich bin ein Freigeist und lasse mich nur ungern auf feste Regeln festlegen.",
+  "Manchmal brauche ich einen Rückzugsort und melde mich dann für eine Weile gar nicht – nimm es nicht persönlich.",
+  "Ich suche jemanden, der genauso unkompliziert ist wie ich und keine tiefgreifenden Diskussionen erzwingt.",
+  "Treue ist ein großes Wort; für mich zählt primär die Chemie im jeweiligen Moment.",
+  "Ich neige dazu, Dinge eher locker zu sehen und verspreche ungern etwas, das ich vielleicht nicht halten kann.",
+  "Wenn es zu ernst wird, bekomme ich oft weiche Knie – ich mag es lieber spielerisch und leicht.",
+  "Ich bin ein Fan von ‚Situationships' – man genießt die Zeit, ohne dass es direkt offiziell sein muss.",
+  "Mein Lifestyle ist sehr turbulent, da bleibt die Zuverlässigkeit manchmal auf der Strecke.",
+  "Ich mag es nicht, wenn man mir direkt Rechenschaft abverlangt, wo ich war oder mit wem ich schreibe.",
+  "Für mich ist Dating wie eine Wundertüte: Man probiert vieles aus, ohne sich sofort festzulegen.",
+  "Ich folge immer meinem Bauchgefühl, auch wenn das bedeutet, dass ich Pläne kurzfristig absage.",
+  "Exklusivität ist ein schönes Ideal, aber oft steht sie dem persönlichen Entfalten im Weg.",
+  "Ich brauche viel Abwechslung und neue Reize, um mich in einer Beziehung nicht zu langweilen.",
+  "Festgelegte Verabredungen für nächste Woche? Das ist mir oft zu weit vorausgeplant.",
+];
+const LZO_ITEMS=[
+  "Wärme und Geborgenheit sind unentbehrliche Bestandteile einer Beziehung.",
+  "Ich möchte einen Partner, mit dem ich zusammen alt werden kann.",
+  "Ich bin bereit, viel in eine Beziehung zu investieren.",
+  "Es ist mir bei einem Partner wichtig, dass dieser später einmal eine gute Mutter/Vater sein könnte.",
+  "Ich erwarte von meinem Partner, dass er für mich da ist, wenn es mir schlecht geht.",
+  "Mein Partner sollte an allen Aspekten meines Lebens teilhaben.",
+  "Es lohnt sich, für eine Beziehung zu kämpfen.",
+  "Mein Partner sollte mit meiner Familie gut zurechtkommen.",
+  "Ich brauche das Gefühl, dass mein Partner mich liebt.",
+  "Mein Partner muss gut mit Kindern umgehen können.",
+  "Mein Partner sollte mir ein gewisses Gefühl der Sicherheit geben.",
+  "Ich möchte möglichst viele verschiedene Beziehungen führen.",
+  "Ich würde gern auf jeden attraktiven Flirt eingehen.",
+  "Ich möchte möglichst viele Partner kennenlernen.",
+  "Es spricht für mich nichts dagegen, Sex mit einer fremden Person zu haben.",
+  "Ich kann mir gut vorstellen, mit jemandem Sex zu haben, den ich danach nicht mehr wiedersehe.",
+  "Ich suche vor allem nach kurzfristigen, angenehmen Begegnungen.",
+  "Ich würde mich nicht auf eine Person festlegen wollen.",
+  "Wenn ich ausgehe, will ich auch jemand Neues kennenlernen.",
+  "Mit jeder neuen Begegnung steigere ich mein Selbstwertgefühl.",
+];
+const LIKERT=["gar\nnicht","eher\nnicht","wenig","neutral","etwas","eher\nja","voll"];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCREENS & STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const SCREENS=['landing','privacy','consent','demographics','excl_check','enc_instr','encoding','test_surprise','test','lzo_instr','lzo','debrief'];
+const PHASES={landing:'',privacy:'',consent:'',demographics:'Phase 1',excl_check:'Phase 1',enc_instr:'Phase 2',encoding:'Phase 2',test_surprise:'Phase 3',test:'Phase 3',lzo_instr:'Phase 4',lzo:'Phase 4',debrief:''};
+
+const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]]}return b;};
+const faceUrl=(id,sex)=>`https://randomuser.me/api/portraits/${sex}/${id}.jpg`;
+const BLANK='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260"><rect fill="%23ddd" width="260" height="260"/><text x="130" y="135" text-anchor="middle" fill="%23aaa" font-size="12" font-family="sans-serif">Foto</text></svg>';
+
+let S={si:0,consent:'',demo:{age:'',gender:'',relationship:'',orientation:''},faceSex:'women',ecology:null,encTrials:[],testTrials:[],encIdx:0,testIdx:0,test:{},lzoPage:0,lzo:{}};
+
+const goTo=n=>{S.si=SCREENS.indexOf(n);render();};
+const goNext=()=>{S.si++;render();};
+
+function mk(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;}
+function btn(label,cb,disabled,ghost){
+  const b=mk('button','btn'+(ghost?' btn-ghost':''));
+  b.textContent=label;b.disabled=!!disabled;b.onclick=cb;return b;
+}
+
+function initStudy(){
+  const ori=S.demo.orientation,gen=S.demo.gender;
+  if(ori==='Homosexuell') S.faceSex=gen==='Männlich'?'men':'women';
+  else if(ori==='Heterosexuell') S.faceSex=gen==='Männlich'?'women':'men';
+  else S.faceSex='women';
+  S.ecology=Math.random()<.5?'realistic':'inverted';
+  const nT=S.ecology==='realistic'?17:7, nU=24-nT;
+  const ids=shuffle([...Array(48)].map((_,i)=>i+2));
+  const encIds=ids.slice(0,24), foilIds=ids.slice(24,48);
+  const usedT=shuffle(VIG_TRUST).slice(0,nT);
+  const usedU=shuffle(VIG_UNTRUST).slice(0,nU);
+  S.encTrials=shuffle([
+    ...encIds.slice(0,nT).map((id,i)=>({id,valence:'trust',vig:usedT[i]})),
+    ...encIds.slice(nT,24).map((id,i)=>({id,valence:'untrust',vig:usedU[i]})),
+  ]);
+  S.testTrials=shuffle([
+    ...S.encTrials.map(t=>({id:t.id,isOld:true,valence:t.valence})),
+    ...foilIds.map(id=>({id,isOld:false,valence:null})),
+  ]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCREEN RENDERERS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function rLanding(){
+  const d=mk('div','screen');
+  d.innerHTML=`
+    <p style="margin-bottom:24px;font-size:14.5px;color:#333">Sehr geehrter Teilnehmer, sehr geehrte Teilnehmerin,</p>
+    <p>Vielen Dank, dass Sie an dieser Studie teilnehmen! In dieser Forschung untersuchen wir grundlegende Wahrnehmungs- und Erinnerungsprozesse im Dating Kontext.</p>
+    <p>Die Bearbeitung dieser Studie wird voraussichtlich 30 Minuten in Anspruch nehmen. Ihre Teilnahme ist freiwillig und Sie können die Studie jederzeit durch das Schließen des Browserfensters abbrechen.</p>
+    <p>Die im Rahmen dieser Studie gesammelten Daten ermöglichen keine Rückschlüsse auf Ihre Person und werden anonym auf Gruppenebene verarbeitet.</p>
+    <p style="margin-top:16px">Vielen Dank für Ihre Unterstützung!</p>
+  `;
+  d.style.display='flex';d.style.flexDirection='column';
+  d.appendChild(btn('WEITER',goNext));
+  return d;
+}
+
+function rPrivacy(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p style="font-weight:600;font-size:15px;margin-bottom:18px">Datenschutz</p>
+    <p>Generell erheben und verarbeiten wir personenbezogene Daten der Teilnehmer:innen nur nach deren Einwilligung. Ziel der Erhebung und Verarbeitung dieser Daten ist die Durchführung dieses Forschungsprojekts. Die Pseudonymität und die Vertraulichkeit der Daten ist gemäß den geltenden Datenschutzgesetzen sowie den ethischen Grundsätzen psychologischer Forschung jederzeit gewährleistet. Alle Daten werden passwortgeschützt gespeichert, vor unbefugtem Zugriff geschützt und werden nicht länger aufbewahrt, als für das Ziel dieser Erhebung erforderlich. Um an dieser Studie teilzunehmen, müssen Sie der untenstehenden Einverständniserklärung zustimmen.</p>
+    <p>Sollten Sie Fragen zu dieser Datenschutzerklärung haben, wenden Sie sich bitte an die leitende Wissenschaftlerin xxx: +49 xxx; E-Mail: xxx (bei speziellen Fragen zum Datenschutz dieser Studie) oder an den Datenschutzbeauftragten der Universität zu Köln (bei allgemeinen Fragen zum Datenschutz; zuständig für Grundsatzfragen): Alexander May: +49 221 470 3872; E-Mail: dsb@verw.uni-koeln.de. Verantwortlich im Sinne der EU-Datenschutzgrundverordnung (GDPR) und der jeweiligen nationalen Datenschutzgesetze und sonstigen Vorschriften ist die Universität zu Köln bzw. die leitende Wissenschaftlerin (s.o.).</p>
+    <p>Für weitere Informationen zum Datenschutz klicken Sie bitte <a href="https://verwaltung.uni-koeln.de/stabsstelle02.3/content/informationen_zur_dsgvo/index_ger.html" target="_blank" style="color:#1a1a1a">hier</a>.</p>
+  `;
+  d.appendChild(btn('WEITER',goNext));
+  return d;
+}
+
+function rConsent(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p style="font-weight:600;font-size:15px;margin-bottom:18px">Erklärung der Zustimmung</p>
+    <p>Ich bestätige hiermit, dass meine Teilnahme an dieser Studie freiwillig ist. Ich bestätige, dass ich mindestens 18 Jahre alt bin. Mir ist bekannt, dass ich die Studie jederzeit ohne Angabe von Gründen und ohne negative Folgen beenden kann (indem ich mein Browser-Fenster schließe).</p>
+    <p>Ich habe das Recht, nach Beendigung der Studie über die Hintergründe, Ziele und Ergebnisse der Studie informiert zu werden. Mir ist bekannt, dass ich dieses Recht geltend machen kann, indem ich die relevanten Informationen anfordere. Die entsprechende Kontaktadresse wird am Ende der Studie angegeben.</p>
+    <p>Meine Pseudonymität gegenüber Dritten bleibt zu jeder Zeit gewahrt. Die Daten werden nur für wissenschaftliche Zwecke verwendet und nur für die Datenanalyse gespeichert. Rückschlüsse auf einzelne Teilnehmer:innen sind nicht möglich. Nach Abschluss der Datenerhebung werden die anonymisierten Daten auf OSF zur Sekundärnutzung durch einen eingeschränkten Kreis Dritter zur Verfügung gestellt, um Transparenz in der Wissenschaft zu gewährleisten. Ziel, Zweck und Umfang dieser Sekundärnutzung sind noch nicht absehbar, die Daten werden aber ausschließlich zu wissenschaftlichen Zwecken verwendet.</p>
+    <p>Ich habe die o.g. Punkte gelesen und verstanden und erkläre mich mit den Teilnahmebedingungen einverstanden. Um dies zu bestätigen, <strong>geben Sie bitte das Wort „Ja" in das unten stehende Feld ein</strong>. Wenn Sie mit diesen Bedingungen nicht einverstanden sind, schließen Sie bitte nun Ihr Browser-Fenster.</p>
+    <div class="consent-field">
+      <span>Ich erkläre mich mit den Teilnahmebedingungen einverstanden:</span>
+      <input type="text" id="ci" placeholder="Ja" value="${S.consent}">
+    </div>
+  `;
+  const b=btn('WEITER',goNext,S.consent.toLowerCase().trim()!=='ja');
+  d.appendChild(b);
+  d.querySelector('#ci').addEventListener('input',e=>{S.consent=e.target.value;b.disabled=S.consent.toLowerCase().trim()!=='ja';});
+  return d;
+}
+
+function rDemo(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`<p style="font-weight:600;font-size:15px;margin-bottom:22px">Soziodemografische Daten:</p>`;
+
+  const b=btn('WEITER',goTo.bind(null,'excl_check'),true);
+  function check(){b.disabled=!(S.demo.age&&S.demo.gender&&S.demo.relationship&&S.demo.orientation);}
+
+  // Q1 — Alter
+  const s1=mk('div','demo-sec');
+  s1.appendChild(mk('p','demo-q','1. Bitte geben Sie Ihr Alter in ganzen Zahlen an.'));
+  const ageInp=document.createElement('input');
+  ageInp.type='number';ageInp.min='18';ageInp.max='99';ageInp.value=S.demo.age||'';
+  ageInp.style.cssText='border:none;border-bottom:1.5px solid #1a1a1a;padding:5px 4px;font-size:14px;background:transparent;outline:none;width:72px;font-family:"DM Sans",sans-serif';
+  ageInp.addEventListener('input',e=>{S.demo.age=e.target.value;check();});
+  s1.appendChild(ageInp);
+  d.appendChild(s1);
+
+  // Q2 — Geschlecht
+  const s2=mk('div','demo-sec');
+  s2.appendChild(mk('p','demo-q','2. Bitte geben Sie Ihr Geschlecht an. <em>(Einfachauswahl)</em>'));
+  const rg2=mk('div','radio-row');
+  ['Männlich','Weiblich','Divers'].forEach(o=>{
+    const l=mk('label','r-lbl');
+    const i=document.createElement('input');i.type='radio';i.name='gender';i.value=o;i.checked=S.demo.gender===o;i.style.accentColor='#1a1a1a';
+    i.addEventListener('change',()=>{S.demo.gender=o;check();});
+    l.appendChild(i);l.appendChild(mk('span','',o));rg2.appendChild(l);
+  });
+  s2.appendChild(rg2);d.appendChild(s2);
+
+  // Q3 — Beziehung
+  const s3=mk('div','demo-sec');
+  s3.appendChild(mk('p','demo-q','3. Befinden Sie sich derzeit in einer romantischen Beziehung? <em>(Einfachauswahl)</em>'));
+  const rg3=mk('div','radio-row');
+  ['Ja','Nein','Möchte ich nicht angeben'].forEach(o=>{
+    const l=mk('label','r-lbl');
+    const i=document.createElement('input');i.type='radio';i.name='relationship';i.value=o;i.checked=S.demo.relationship===o;i.style.accentColor='#1a1a1a';
+    i.addEventListener('change',()=>{S.demo.relationship=o;check();});
+    l.appendChild(i);l.appendChild(mk('span','',o));rg3.appendChild(l);
+  });
+  s3.appendChild(rg3);d.appendChild(s3);
+
+  // Q4 — Orientierung
+  const s4=mk('div','demo-sec');
+  s4.appendChild(mk('p','demo-q','4. Wie würden Sie Ihre sexuelle Orientierung bezeichnen? <em>(Einfachauswahl)</em>'));
+  const rg4=mk('div','radio-row');
+  ['Heterosexuell','Homosexuell','Bisexuell','Eine andere sexuelle Orientierung'].forEach(o=>{
+    const l=mk('label','r-lbl');
+    const i=document.createElement('input');i.type='radio';i.name='orientation';i.value=o;i.checked=S.demo.orientation===o;i.style.accentColor='#1a1a1a';
+    i.addEventListener('change',()=>{S.demo.orientation=o;check();});
+    l.appendChild(i);l.appendChild(mk('span','',o));rg4.appendChild(l);
+  });
+  s4.appendChild(rg4);d.appendChild(s4);
+
+  d.appendChild(b);
+  return d;
+}
+
+function rExclCheck(){
+  const age=parseInt(S.demo.age)||0;
+  const inRel=S.demo.relationship==='Ja';
+  if(age<18||inRel){
+    const d=mk('div','screen');
+    d.style.display='flex';d.style.flexDirection='column';
+    d.innerHTML=`
+      <h2>Leider können Sie nicht teilnehmen.</h2>
+      <div class="excl-box"><p>${age<18?'Diese Studie richtet sich ausschließlich an Personen ab 18 Jahren.':'Diese Studie richtet sich ausschließlich an Personen, die sich aktuell nicht in einer festen Partnerschaft befinden.'}</p></div>
+      <p style="margin-top:8px">Vielen Dank für Ihr Interesse an unserer Forschung.</p>
+    `;
+    const b=btn('Zurück zum Anfang',()=>{S={...S,si:0,consent:'',demo:{age:'',gender:'',relationship:'',orientation:''}};render();},false,true);
+    d.appendChild(b);
+    return d;
+  }
+  initStudy();
+  goTo('enc_instr');
+  return mk('div');
+}
+
+function rEncInstr(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p>Im Folgenden werden Ihnen verschiedene Personen und kurze Verhaltensbeschreibungen von diesen Personen gezeigt.</p>
+    <p>Lesen Sie die Informationen bitte jeweils durch.</p>
+  `;
+  d.appendChild(btn('WEITER',goNext));
+  return d;
+}
+
+function rEncoding(){
+  const trial=S.encTrials[S.encIdx];
+  const d=mk('div','screen wide');
+  d.style.cssText='min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:40px 64px;max-width:860px;margin:0 auto;align-items:center';
+
+  const ctr=mk('p','enc-ctr',`${S.encIdx+1} / ${S.encTrials.length}`);
+  ctr.style.alignSelf='flex-end';
+  d.appendChild(ctr);
+
+  const card=mk('div','enc-card');
+  const img=document.createElement('img');
+  img.className='enc-face';img.src=faceUrl(trial.id,S.faceSex);img.alt='';img.onerror=()=>img.src=BLANK;
+  card.appendChild(img);
+
+  const vb=mk('div','enc-vig-box');
+  vb.appendChild(mk('p','',`„${trial.vig}"`));
+  card.appendChild(vb);
+
+  const tw=mk('div','timer-wrap');tw.style.width='420px';
+  const tf=mk('div','timer-fill');tw.appendChild(tf);card.appendChild(tw);
+  d.appendChild(card);
+
+  const b=btn('WEITER',()=>{
+    if(S.encIdx+1<S.encTrials.length){S.encIdx++;render();}
+    else goTo('test_surprise');
+  },true);
+  d.appendChild(b);
+
+  const t0=Date.now();
+  const iv=setInterval(()=>{
+    const p=Math.min(100,((Date.now()-t0)/5000)*100);
+    tf.style.width=p+'%';
+    if(p>=100){clearInterval(iv);b.disabled=false;}
+  },50);
+  return d;
+}
+
+function rTestSurprise(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p>Nun werden Ihnen wieder Gesichter gezeigt, diesmal aber ohne Texte.</p>
+    <p>Bitte geben Sie bei jedem Gesicht an, ob Sie dieses Gesicht im ersten Teil der Studie bereits gesehen haben oder nicht.</p>
+    <p>Anschließend bitten wir Sie, eine Eigenschaft auszuwählen, die Sie dieser Person spontan zuschreiben würden.</p>
+  `;
+  d.appendChild(btn('WEITER',goNext));
+  return d;
+}
+
+function rTest(){
+  const trial=S.testTrials[S.testIdx];
+  const key=S.testIdx;
+  const cur=S.test[key]||{};
+
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';d.style.alignItems='center';
+
+  const ctr=mk('p','ctr-lbl',`${S.testIdx+1} / ${S.testTrials.length}`);
+  ctr.style.alignSelf='flex-end';d.appendChild(ctr);
+
+  const img=document.createElement('img');
+  img.className='test-face';img.src=faceUrl(trial.id,S.faceSex);img.alt='';img.onerror=()=>img.src=BLANK;
+  d.appendChild(img);
+
+  const b=btn('WEITER',()=>{
+    if(S.testIdx+1<S.testTrials.length){S.testIdx++;render();}
+    else goTo('lzo_instr');
+  },true);
+
+  if(!cur.step1){
+    // Old/New
+    d.appendChild(mk('p','test-q','Haben Sie diese Person bereits im ersten Teil der Studie gesehen?'));
+    const ar=mk('div','ans-row');
+    ['Ja','Nein'].forEach(label=>{
+      const ab=mk('button','ans-btn',label);
+      ab.onclick=()=>{
+        const isOld=label==='Ja';
+        S.test[key]={step1:isOld?'old':'new'};
+        if(!isOld){b.disabled=false;ar.querySelectorAll('.ans-btn').forEach(x=>{x.disabled=true;});ab.classList.add('sel');}
+        else render();
+      };
+      ar.appendChild(ab);
+    });
+    d.appendChild(ar);
+  } else if(cur.step1==='old'&&!cur.step2){
+    // Source judgment
+    d.appendChild(mk('p','test-q','Welche Eigenschaft würden Sie dieser Person zuschreiben?'));
+    const ar=mk('div','ans-row');
+    [['Vertrauenswürdig','trust',''],['nicht-vertrauenswürdig','untrust',''],['Weiß nicht','dk',' wn']].forEach(([label,val,cls])=>{
+      const ab=mk('button',`ans-btn${cls}`,label);
+      ab.onclick=()=>{
+        S.test[key]={...cur,step2:val};
+        b.disabled=false;
+        ar.querySelectorAll('.ans-btn').forEach(x=>{x.disabled=true;x.classList.remove('sel');});
+        ab.classList.add('sel');
+      };
+      ar.appendChild(ab);
+    });
+    d.appendChild(ar);
+  } else {
+    b.disabled=false;
+  }
+  d.appendChild(b);
+  return d;
+}
+
+function rLzoInstr(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p>Bitte lesen Sie die folgenden Aussagen sorgfältig durch. Geben Sie an, inwieweit diese Aussagen auf Sie und Ihre persönlichen Wünsche zutreffen. Es gibt keine richtigen oder falschen Antworten – nur Ihre ehrliche Einschätzung zählt.</p>
+  `;
+  d.appendChild(btn('WEITER',goNext));
+  return d;
+}
+
+function rLzo(){
+  const PER=4,start=S.lzoPage*PER,items=LZO_ITEMS.slice(start,start+PER),totalP=Math.ceil(LZO_ITEMS.length/PER);
+  const d=mk('div','screen');d.style.display='flex';d.style.flexDirection='column';
+
+  const hdr=mk('div','');hdr.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:18px';
+  hdr.innerHTML=`<p style="font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#bbb;margin:0">LZO-Skala</p><p style="font-size:10px;color:#bbb;letter-spacing:1px;margin:0">${S.lzoPage+1} / ${totalP}</p>`;
+  d.appendChild(hdr);
+
+  const lhdr=mk('div','lik-hdr');LIKERT.forEach(l=>{const s=mk('span','');s.textContent=l;lhdr.appendChild(s);});
+  d.appendChild(lhdr);
+
+  const allDone=()=>items.every((_,i)=>S.lzo[start+i]!==undefined);
+  const b=btn('WEITER',()=>{if(S.lzoPage+1<totalP){S.lzoPage++;render();}else goTo('debrief');},!allDone());
+
+  items.forEach((item,i)=>{
+    const gi=start+i;
+    const row=mk('div','lzo-item');
+    row.appendChild(mk('p','lzo-q',`${gi+1}. ${item}`));
+    const lr=mk('div','lik-row');
+    for(let v=0;v<7;v++){
+      const opt=mk('label','lik-opt');
+      const inp=document.createElement('input');inp.type='radio';inp.name=`lzo-${gi}`;inp.value=v;inp.checked=S.lzo[gi]===v;inp.style.accentColor='#1a1a1a';
+      inp.addEventListener('change',()=>{S.lzo[gi]=v;b.disabled=!allDone();});
+      opt.appendChild(inp);lr.appendChild(opt);
+    }
+    row.appendChild(lr);d.appendChild(row);
+  });
+  d.appendChild(b);
+  return d;
+}
+
+function rDebrief(){
+  const d=mk('div','screen');
+  d.style.display='flex';d.style.flexDirection='column';
+  d.innerHTML=`
+    <p>Vielen Dank für Ihre Teilnahme an dieser Studie!</p>
+    <p>In der Untersuchung ging es darum, wie Personen Informationen in Datingprofilen wahrnehmen, bewerten und erinnern. Konkret untersuchten wir, ob sich die Verteilung vertrauenswürdiger und nicht-vertrauenswürdiger Profilbeschreibungen auf das Quellengedächtnis auswirkt – und ob die persönliche Beziehungsorientierung (LZO) diesen Effekt moderiert. Dies bezeichnet man als den <em>Cheater-Memory-Effekt</em>.</p>
+    <p>Sollten sie Fragen haben, können Sie sich gerne per Mail an uns wenden:<br><strong>nwochnik@smail.uni-koeln.de</strong></p>
+    <p>Ihre Daten wurden gespeichert und Sie können das Browserfenster nun schließen.</p>
+    <p style="font-size:11px;color:#bbb;margin-top:28px;padding-top:20px;border-top:1px solid #e5e0d8">Click Dummy · keine echten Daten gespeichert · Bedingung: <em>${S.ecology||'–'}</em></p>
+  `;
+  const b=btn('NEU STARTEN',()=>{
+    S={si:0,consent:'',demo:{age:'',gender:'',relationship:'',orientation:''},faceSex:'women',ecology:null,encTrials:[],testTrials:[],encIdx:0,testIdx:0,test:{},lzoPage:0,lzo:{}};render();
+  },false,true);
+  b.style.marginTop='20px';d.appendChild(b);
+  return d;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════════════════
+const R={landing:rLanding,privacy:rPrivacy,consent:rConsent,demographics:rDemo,excl_check:rExclCheck,enc_instr:rEncInstr,encoding:rEncoding,test_surprise:rTestSurprise,test:rTest,lzo_instr:rLzoInstr,lzo:rLzo,debrief:rDebrief};
+function render(){
+  const root=document.getElementById('root'),s=SCREENS[S.si];
+  document.getElementById('pbar').style.width=(((S.si+1)/SCREENS.length)*100)+'%';
+  document.getElementById('plbl').textContent=PHASES[s]||'';
+  root.innerHTML='';const fn=R[s];if(fn)root.appendChild(fn());
+}
+render();
+</script></body></html>
